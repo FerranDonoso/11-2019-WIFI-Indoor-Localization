@@ -7,8 +7,11 @@ if ("pacman" %in% rownames(installed.packages()) == FALSE) {
 }
 
 # Load data
-trainingData <- read_csv("C:/.../trainingData.csv")
-validationData <- read_csv("C:/.../validationData.csv")
+current_path <- rstudioapi::getActiveDocumentContext()$path
+setwd(dirname(current_path))
+
+trainingData <- read_csv("trainingData.csv")
+validationData <- read_csv("validationData.csv")
 
 # NA
 sum(is.na(trainingData))
@@ -40,7 +43,8 @@ validationData$Set <- "Validation"
 combinedData <- bind_rows(trainingData, validationData)
 combinedData$Set <- as.factor(combinedData$Set)
 
-p <- plot_ly(combinedData, x = ~LONGITUDE, y = ~LATITUDE, z = ~FLOOR, color = ~Set, colors = c("cyan", "red"),
+p <- plot_ly(combinedData, x = ~LONGITUDE, y = ~LATITUDE, z = ~FLOOR,
+             color = ~Set, colors = c("cyan", "red"),
              size = 1.2) %>% add_markers() %>%
   layout(scene = list(xaxis = list(title = "Longitude"),
                       yaxis = list(title = "Latitude"),
@@ -135,7 +139,8 @@ validationData   <- replace_values(validationData)
 
 # create BUILDINGID_FLOOR feature
 build_floor <- function(df) {
-  df <- unite(df, BUILDINGID_FLOOR, c("BUILDINGID", "FLOOR"), sep = "_", remove = FALSE)
+  df <- unite(df, BUILDINGID_FLOOR, c("BUILDINGID", "FLOOR"),
+              sep = "_", remove = FALSE)
   df$BUILDINGID_FLOOR <- as.factor(df$BUILDINGID_FLOOR)
   return(df)
 }
@@ -149,7 +154,8 @@ HighestWap_train <- names(trainingData)[apply(trainingData[, c(WAPs)], 1, which.
 
 #### Second step: For each observation we find out in which building_floor the 
 #### observation was recorded.
-Highest_loc_train <- data.frame("WAP" = HighestWap_train, "BFLocation" = trainingData$BUILDINGID_FLOOR)
+Highest_loc_train <- data.frame("WAP" = HighestWap_train,
+                                "BFLocation" = trainingData$BUILDINGID_FLOOR)
 
 #### Third step:We find out for each WAP what was the most frequent building-floor
 #### in which the highest signal was recorded for it and we store if on a dataframe.
@@ -166,10 +172,12 @@ multiple$Most_Frequent_location <- factor(multiple$Most_Frequent_location,
 
 #### Evaluating the model. In order to do that, we will append a new column 
 #### to the Highest_loc_train dataframe with the prediction.
-Highest_loc_train$Prediction <- sapply(Highest_loc_train$WAP, function(x) multiple[which(multiple$WAP == x), ]$Most_Frequent_location)
+Highest_loc_train$Prediction <- sapply(Highest_loc_train$WAP,
+                                       function(x) multiple[which(multiple$WAP == x), ]$Most_Frequent_location)
 
 #### Getting the confussion Matrix of the model on the training set ####
-BFPred_cm <- confusionMatrix(trainingData$BUILDINGID_FLOOR, Highest_loc_train$Prediction)
+BFPred_cm <- confusionMatrix(trainingData$BUILDINGID_FLOOR,
+                             Highest_loc_train$Prediction)
 BFPred_cm
 
 #understanding errors
@@ -177,11 +185,13 @@ correctness <- function(x, y){
   return(ifelse(x == y, "Green", "Red"))
 }
 
-trainingData$Error_BFPred <- mapply(correctness,Highest_loc_train$BFLocation,Highest_loc_train$Prediction)
+trainingData$Error_BFPred <- mapply(correctness,Highest_loc_train$BFLocation,
+                                    Highest_loc_train$Prediction)
 trainingData$Error_BFPred <- as.factor(trainingData$Error_BFPred)
 
 # Plotting the locations where this simple model makes the mistakes.
-p1 <- plot_ly(trainingData, x = ~LONGITUDE, y = ~LATITUDE, z = ~FLOOR, color = ~Error_BFPred, colors = c("green", "red"),
+p1 <- plot_ly(trainingData, x = ~LONGITUDE, y = ~LATITUDE, z = ~FLOOR,
+              color = ~Error_BFPred, colors = c("green", "red"),
               size = 1.2) %>% add_markers() %>%
   layout(scene = list(xaxis = list(title = "Longitude"),
                       yaxis = list(title = "Latitude"),
@@ -192,8 +202,10 @@ p1
 #### In order to do this, we only need to get the first digit of the predicted
 #### building-floor.
 
-Highest_loc_train$BLocation   <- str_sub(Highest_loc_train$BFLocation, start = 1, end = 1)
-Highest_loc_train$BPrediction <- str_sub(Highest_loc_train$Prediction, start = 1, end = 1)
+Highest_loc_train$BLocation   <- str_sub(Highest_loc_train$BFLocation, start = 1,
+                                         end = 1)
+Highest_loc_train$BPrediction <- str_sub(Highest_loc_train$Prediction, start = 1,
+                                         end = 1)
 
 Highest_loc_train$BLocation   <- as.factor(Highest_loc_train$BLocation)
 Highest_loc_train$BPrediction <- as.factor(Highest_loc_train$BPrediction)
@@ -202,15 +214,18 @@ Highest_loc_train$BPrediction <- as.factor(Highest_loc_train$BPrediction)
 #### training set.
 #### Accuracy: 0.997, Kappa: 0.995
 
-BPredic_cm <- confusionMatrix(Highest_loc_train$BLocation, Highest_loc_train$BPrediction)
+BPredic_cm <- confusionMatrix(Highest_loc_train$BLocation,
+                              Highest_loc_train$BPrediction)
 BPredic_cm
 
 #understanding errors
-trainingData$Error_BPred <- mapply(correctness,Highest_loc_train$BLocation,Highest_loc_train$BPrediction)
+trainingData$Error_BPred <- mapply(correctness,Highest_loc_train$BLocation,
+                                   Highest_loc_train$BPrediction)
 trainingData$Error_BPred <- as.factor(trainingData$Error_BPred)
 
 # Plotting the locations where this simple model makes the mistakes.
-p2 <- plot_ly(trainingData, x = ~LONGITUDE, y = ~LATITUDE, z = ~FLOOR, color = ~Error_BPred, colors = c("green", "red"),
+p2 <- plot_ly(trainingData, x = ~LONGITUDE, y = ~LATITUDE,
+              z = ~FLOOR, color = ~Error_BPred, colors = c("green", "red"),
               size = 1.2) %>% add_markers() %>%
   layout(scene = list(xaxis = list(title = "Longitude"),
                       yaxis = list(title = "Latitude"),
