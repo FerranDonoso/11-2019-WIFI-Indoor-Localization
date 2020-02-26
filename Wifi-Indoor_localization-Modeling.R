@@ -160,7 +160,7 @@ Longitude_Model_metrics_train <- postResample(Longitude_Model$predictions, train
 
 Longitude_Model_pred_val <- predict(Longitude_Model, validationData[, c(WAPs)])
 
-Longitude_Model_metrics_val <- postResample(Longitude_Model_train_metrics_pred_val$predictions, validationData$LONGITUDE)
+Longitude_Model_metrics_val <- postResample(Longitude_Model_pred_val$predictions, validationData$LONGITUDE)
 
 #lon errors
 metrics_lon[nrow(metrics_lon) + 1, ] <- c(Longitude_Model_metrics_train[1:3], "AllWaps", "Training")
