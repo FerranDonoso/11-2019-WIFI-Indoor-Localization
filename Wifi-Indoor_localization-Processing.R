@@ -7,8 +7,8 @@ if ("pacman" %in% rownames(installed.packages()) == FALSE) {
 }
 
 # Load data
-trainingData <- read_csv("C:/Users/FDL_4/OneDrive/Documentos/Ubiqum/Course/Module 4/Task 1/Ignacio/Wi-Fi-master/datasets/trainingData.csv")
-validationData <- read_csv("C:/Users/FDL_4/OneDrive/Documentos/Ubiqum/Course/Module 4/Task 1/Ignacio/Wi-Fi-master/datasets/validationData.csv")
+trainingData <- read_csv("C:/.../trainingData.csv")
+validationData <- read_csv("C:/.../validationData.csv")
 
 # NA
 sum(is.na(trainingData))
