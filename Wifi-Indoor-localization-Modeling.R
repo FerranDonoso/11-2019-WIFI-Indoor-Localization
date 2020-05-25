@@ -240,8 +240,3 @@ metrics_lon
 # Plotting LONGITUDE error distribution
 pabserror_split(Longitude_Model_pred_val$predictions, validationData$LONGITUDE,
                 validationData$BUILDINGID, "LONGITUDE")
-
-
-
-
-
