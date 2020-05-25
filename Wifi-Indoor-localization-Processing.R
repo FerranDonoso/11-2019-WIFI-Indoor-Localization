@@ -247,38 +247,6 @@ validationData$TopWap1 <- factor(validationData$TopWap1, levels = WAPs)
 validationData$TopWap2 <- factor(validationData$TopWap2, levels = WAPs)
 validationData$TopWap3 <- factor(validationData$TopWap3, levels = WAPs)
 
-###
-#longitude then latitude
-###
-#longitude MAE: 3.9075783
-#longitude range: 395.113
-#MAE relative to range: 101.1145
-395.113 / 3.9075783
-#latitude MAE: 2.9017225
-#latitude range: 271.0905
-#MAE relative to range: 93.42399
-271.0905 / 2.9017225
-
-###
-#latitude then longitude
-###
-#latitude MAE: 3.2175152
-#latitude range: 271.0905
-#MAE relative to range: 84.25461
-271.0905 / 3.2175152
-#longitude MAE: 3.4914148
-#longitude range: 395.113
-#MAE relative to range: 113.167
-395.113 / 3.4914148
-
-#lat first: lon MAE relative to range increased 12.0525 / lat MAE stays the same
-101.1145 - 113.167
-
-#lon first: lat MAE relative to range increased 9.16938 / lon MAE stays the same
-84.25461 - 93.42399
-
-#since range stays the same, and the MAE gets lower, the bigger the increase the better
-
 # Normalize
 # Since we removed some WAPs we will check again for rows with no signals and remove them
 drop_null_value_rows <- function(df) {
@@ -301,9 +269,3 @@ normalize <- function(df) {
 
 trainingData <- normalize(trainingData)
 validationData <- normalize(validationData)
-
-
-
-
-
-
