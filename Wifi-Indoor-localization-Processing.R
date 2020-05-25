@@ -98,7 +98,7 @@ dat1 <- melt(combinedData[, c(WAPs, "Set")])
 
 p0 <- ggplot(dat1, aes(x = value, fill = Set)) +
   geom_density(alpha = 0.2) +
-  xlab("RSSI Signal value") +
+  xlab("Signal value") +
   ggtitle("Densities of WAP signals for each dataset")
 
 p0
@@ -198,13 +198,13 @@ for (i in BadWAPsB) {
   x <- trainingData[[i]]
   x[x == -100] <- NA
   plot(trainingData$BUILDINGID_FLOOR, x, ylim = c(-100, -25), main = i,
-       xlab = "BUILDINGID_FLOOR", ylab = "RSSI Signal value")
+       xlab = "BUILDINGID_FLOOR", ylab = "Signal value")
 }
 
 for (i in BadWAPsB) {
   x <- trainingData[[i]]
   x[x == -100] <- NA
-  plot(density(x, na.rm = TRUE), main = i, xlab = "RSSI Signal value")
+  plot(density(x, na.rm = TRUE), main = i, xlab = "Signal value")
 }
 
 # Remove the bad BUILDINGID WAPs from both datasets
